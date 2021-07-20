@@ -1,0 +1,49 @@
+{% extends './base.html' %}
+{% load static %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <a href="{% url 'company-create' %}" class="btn btn-info" style="font-family:BMJUA; margin:10px;">추가</a>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-4" style="border-right:1px solid black;">
+                <h2 style="font-family:BMJUA; text-align:center;">등록된 공고</h2>
+            {% for object in objects %}
+                <div class="col-md-12">
+                    <div class="card text-white bg-primary mb-3" style="max-width: 20rem; margin:10px;">
+                      <div class="card-header" style="font-family:BMJUA;">{{object.company_name}}</div>
+                      <div class="card-body">
+                          <h4 class="card-title" style="font-family:BMJUA;">{{object.intern_title}}</h4>
+                          <p class="card-text" style="font-family:BMJUA;">{{object.duration}}</p>
+                          <a href="{% url 'company-delete' object.id %}" class="btn btn-info" style="font-family:BMJUA;">삭제하기</a>
+                          <a href="{% url 'company-modify' object.id %}" class="btn btn-success" style="font-family:BMJUA;">변경하기</a>
+                      </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+
+            <div class="col-md-8">
+                <h2 style="font-family:BMJUA; text-align:center;">현재 모집중인 공고</h2>
+                <div class="row">
+                {% for object in internship_information %}
+                    <div class="col-md-4">
+                        <div class="card text-white bg-primary mb-3" style="max-width: 20rem; margin:10px;">
+                          <div class="card-header" style="font-family:BMJUA;">{{object.company_name}}</div>
+                          <div class="card-body">
+                              <h4 class="card-title" style="font-family:BMJUA;">{{object.title}}</h4>
+                              <p class="card-text" style="font-family:BMJUA;">{{object.duration}}</p>
+                          </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

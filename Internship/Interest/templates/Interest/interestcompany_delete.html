@@ -1,0 +1,9 @@
+{% extends './base.html' %}
+{% block content %}
+    <form action="{% url 'company-delete' company.id %}" method="post" > {% csrf_token %}
+        <div class="row" style="text-align: center; margin: 10px;">
+            <p> 정말로 삭제하시겠습니까 ? </p>
+            <input type="submit" class="btn btn-info col-sm-2" style="margin: auto;" value="삭제하기">
+        </div>
+    </form>
+{% endblock content %}

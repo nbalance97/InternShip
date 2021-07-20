@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Internship Project</title>
+    <link href="{% static 'Interest/css/bootstrap.min.css'%}" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: BMJUA;
+            src: url("{% static 'Interest/fonts/BMJUA_ttf.ttf' %}");
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#" style="font-family: BMJUA"> 인턴십 사이트 </a>
+  </div>
+</nav>
+    {% block content %}
+    {% endblock content %}
+</body>
+</html>
