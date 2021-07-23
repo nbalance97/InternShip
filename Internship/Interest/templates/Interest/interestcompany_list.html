@@ -11,7 +11,7 @@
         <hr>
 
         <div class="row">
-            <div class="col-md-4" style="border-right:1px solid black;">
+            <div class="col-md-4" id="enrolled_data" style="border-right:1px solid black;">
                 <h2 style="font-family:BMJUA; text-align:center;">등록된 공고</h2>
             {% for object in objects %}
                 <div class="col-md-12">
@@ -31,19 +31,70 @@
             <div class="col-md-8">
                 <h2 style="font-family:BMJUA; text-align:center;">현재 모집중인 공고</h2>
                 <div class="row">
-                {% for object in internship_information %}
+                {% for object in internship_obj.object_list %}
                     <div class="col-md-4">
                         <div class="card text-white bg-primary mb-3" style="max-width: 20rem; margin:10px;">
                           <div class="card-header" style="font-family:BMJUA;">{{object.company_name}}</div>
                           <div class="card-body">
+                              <input type="hidden" id="name{{forloop.counter0}}" name="{{object.company_name}}">
+                              <input type="hidden" id="title{{forloop.counter0}}" name="{{object.title}}">
                               <h4 class="card-title" style="font-family:BMJUA;">{{object.title}}</h4>
                               <p class="card-text" style="font-family:BMJUA;">{{object.duration}}</p>
+                              <a class="btn btn-success" id="success" onclick="clickevent(this);" name="{{forloop.counter0}}">관심 기업 등록</a>
                           </div>
                         </div>
                     </div>
                 {% endfor %}
                 </div>
+                <div class="row justify-content-md-center" style="margin:auto">
+                    {% if internship_obj.has_previous %}
+                        <a href="?page=1" class="col-sm-1 btn btn-warning"><<</a>
+                        <a href="?page={{ internship_obj.previous_page_number }}" class="col-sm-1 btn btn-warning"><</a>
+                    {% else %}
+                        <a class="col-sm-1"></a>
+                        <a class="col-sm-1"></a>
+                    {% endif %}
+                        <div class="col-sm-3" style="margin: 10px 0px; text-align: center; font-family:BMJUA;">
+                            Page {{ internship_obj.number }} of {{ internship_obj.paginator.num_pages }}.
+                        </div>
+                    {% if internship_obj.has_next %}
+                        <a href="?page={{ internship_obj.next_page_number }}" class="col-sm-1 btn btn-warning">></a>
+                        <a href="?page={{ internship_obj.paginator.num_pages }}" class="col-sm-1 btn btn-warning">>></a>
+                    {% else %}
+                        <a class="col-sm-1"></a>
+                        <a class="col-sm-1"></a>
+                    {% endif %}
+
+                </div>
             </div>
         </div>
     </div>
 {% endblock content %}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+    function clickevent(self) {
+        var idx = $(self).attr('name')
+        var name = $('#name'+idx).attr('name')
+        var title = $('#title'+idx).attr('name')
+        console.log(idx+"//"+name+"//"+title); // Test
+        $.ajax({
+            type: "POST",
+            url: "{% url 'api-company-list' %}",
+            data: {
+                "company_name" : name,
+                "intern_title" : title,
+                "duration" : "1900-01-01T12:00"
+            },
+            dataType: "json",
+            success: function(response) {
+                window.location.reload()
+            },
+            error: function(request, status, error) {
+                console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+error);
+
+            }
+        });
+    }
+</script>
+{% endblock script %}
