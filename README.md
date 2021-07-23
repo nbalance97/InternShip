@@ -54,7 +54,8 @@ urlpatterns = [
 4. InterestCompanyUpdateView -> 관심 회사 데이터 변경
 
 # Process.py
-## 취업 사이트 파싱 -> 리스트 반환하여 뷰로 전달
+  
+## 사이트 파싱 -> 데이터를 리스트 반환하여 뷰로 전달
 ``` python
 def get_internship_information():
     url = "https://job.incruit.com/jobdb_list/searchjob.asp?ct=14&ty=1&cd=4"
@@ -94,4 +95,29 @@ def get_internship_information():
         total_list.append(intern_data)
 
     return total_list
+```
+
+- 제네릭 뷰에서 context에 실어서 넘겨주기
+``` python
+class InterestCompanyListView(ListView):
+    model = InterestCompany
+    template_name = 'Interest/interestcompany_list.html'
+    context_object_name = 'objects'
+
+    def get_page_number(self):
+        page_number = self.request.GET.get('page')
+        if page_number is None:
+            return 1
+        else:
+            return page_number
+
+    def get_context_data(self, **kwargs):
+        context = super(InterestCompanyListView, self).get_context_data(**kwargs)
+        internship_info = get_internship_information()
+        page = self.get_page_number()
+        total_page_list = Paginator(internship_info, 9)
+        curr_page = total_page_list.get_page(page)
+        context['internship_information'] = internship_info
+        context['internship_obj'] = curr_page
+        return context
 ```
