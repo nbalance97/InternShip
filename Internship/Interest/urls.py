@@ -18,6 +18,7 @@ urlpatterns = [
     path('interest/', views.InterestCompanyListView.as_view(), name='company-list'),
     path('interest/create', views.InterestCompanyCreateView.as_view(), name='company-create'),
     path('interest/<int:company_id>/delete', views.InterestCompanyDeleteView.as_view(), name='company-delete'),
+    path('interest/deleteall', views.InterestCompanyAllDelete, name='company-all-delete'),
     path('interest/<int:company_id>/modify', views.InterestCompanyUpdateView.as_view(), name='company-modify'),
     path('interest/api/', IC_list, name="api-company-list"),
     path('interest/api/<int:pk>/', IC_detail, name="api-company-detail"),

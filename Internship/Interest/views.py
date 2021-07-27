@@ -1,4 +1,4 @@
-from django.shortcuts import reverse
+from django.shortcuts import reverse, redirect
 # Generic View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 # Pagination
@@ -15,8 +15,8 @@ from .process import get_internship_information
 # Create your views here.
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
-    def enforce_csrf(self, request):
-        return  # To not perform the csrf check previously happening
+    def enforce_csrf(self, request): # 실제 SessionAuthentication시 발생하는 체킹
+        return  # 수행하지 않도록
 
 class InterestCompanyViewSet(viewsets.ModelViewSet):
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
@@ -73,6 +73,12 @@ class InterestCompanyUpdateView(UpdateView):
     
     def get_success_url(self):
         return reverse('company-list')
+
+def InterestCompanyAllDelete(request):
+    object = InterestCompany.objects.all()
+    object.delete()
+    return redirect('company-list')
+
 
 
 
