@@ -3,10 +3,18 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-10">
                 <a href="{% url 'company-create' %}" class="btn btn-info" style="font-family:BMJUA; margin:10px;">추가</a>
                 <a href="{% url 'company-all-delete' %}" class="btn btn-warning" style="font-family:BMJUA;" margin:10px;">전체삭제</a>
-                <a href="{% url 'common-login' %}" class="btn btn-success" style="font-family:BMJUA;" margin:10px;">로그인</a>
+            </div>
+            <div class="col-md-2">
+                {% if user.is_authenticated %}
+                    <label style="font-family:BMJUA;">{{ user.username }}님</label>
+                    <a href="{% url 'common-logout' %}" class="btn btn-success" style="font-family:BMJUA; margin:10px;">로그아웃</a>
+                {% else %}
+                    <a href="{% url 'common-login' %}" class="btn btn-success" style="font-family:BMJUA; margin:10px;">로그인</a>
+                    <a href="{% url 'common-signup' %}" class="btn btn-success" style="font-family:BMJUA; margin:10px;">회원가입</a>
+                {% endif %}
             </div>
         </div>
 
@@ -81,11 +89,12 @@
         var idx = $(self).attr('name')
         var name = $('#name'+idx).attr('name')
         var title = $('#title'+idx).attr('name')
-        console.log(idx+"//"+name+"//"+title); // Test
+        var userId = '{{ user.id }}';
         $.ajax({
             type: "POST",
             url: "{% url 'api-company-list' %}",
             data: {
+                "user" : userId,
                 "company_name" : name,
                 "intern_title" : title,
                 "duration" : "1900-01-01T12:00"

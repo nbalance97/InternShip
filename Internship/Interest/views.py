@@ -14,14 +14,17 @@ from .forms import InterestCompanyForm
 from .process import get_internship_information
 # Create your views here.
 
+
 class CsrfExemptSessionAuthentication(SessionAuthentication):
     def enforce_csrf(self, request): # 실제 SessionAuthentication시 발생하는 체킹
         return  # 수행하지 않도록
+
 
 class InterestCompanyViewSet(viewsets.ModelViewSet):
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = InterestCompany.objects.all()
     serializer_class = InterestCompanySerializer
+
 
 class InterestCompanyListView(ListView):
     model = InterestCompany
@@ -34,6 +37,11 @@ class InterestCompanyListView(ListView):
             return 1
         else:
             return page_number
+
+    def get_queryset(self):
+        if self.request.user.is_anonymous: # 로그인되지 않은 경우
+            return []
+        return self.model.objects.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super(InterestCompanyListView, self).get_context_data(**kwargs)
@@ -53,6 +61,10 @@ class InterestCompanyCreateView(CreateView):
 
     def get_success_url(self):
         return reverse('company-list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
 class InterestCompanyDeleteView(DeleteView):
@@ -74,8 +86,9 @@ class InterestCompanyUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('company-list')
 
+
 def InterestCompanyAllDelete(request):
-    object = InterestCompany.objects.all()
+    object = InterestCompany.objects.filter(user=request.user)
     object.delete()
     return redirect('company-list')
 
