@@ -6,8 +6,9 @@ from django.core.paginator import Paginator
 # Rest API
 from .serializer import InterestCompanySerializer
 from rest_framework import viewsets
-
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 from .models import InterestCompany
 from .forms import InterestCompanyForm
@@ -15,13 +16,7 @@ from .process import get_internship_information
 # Create your views here.
 
 
-class CsrfExemptSessionAuthentication(SessionAuthentication):
-    def enforce_csrf(self, request): # 실제 SessionAuthentication시 발생하는 체킹
-        return  # 수행하지 않도록
-
-
 class InterestCompanyViewSet(viewsets.ModelViewSet):
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = InterestCompany.objects.all()
     serializer_class = InterestCompanySerializer
 
@@ -54,39 +49,43 @@ class InterestCompanyListView(ListView):
         return context
 
 
-class InterestCompanyCreateView(CreateView):
+class InterestCompanyCreateView(LoginRequiredMixin, CreateView):
     model = InterestCompany
     form_class = InterestCompanyForm
     template_name = 'Interest/interestcompany_create.html'
+    login_url = 'common-login'
 
     def get_success_url(self):
         return reverse('company-list')
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        form.instance.user = self.request.user # user 객체 추가
         return super().form_valid(form)
 
 
-class InterestCompanyDeleteView(DeleteView):
+class InterestCompanyDeleteView(LoginRequiredMixin, DeleteView):
     model = InterestCompany
     pk_url_kwarg = 'company_id'
     template_name = 'Interest/interestcompany_delete.html'
     context_object_name = 'company'
+    login_url = 'common-login'
 
     def get_success_url(self):
         return reverse('company-list')
 
 
-class InterestCompanyUpdateView(UpdateView):
+class InterestCompanyUpdateView(LoginRequiredMixin, UpdateView):
     model = InterestCompany
     form_class = InterestCompanyForm
     template_name = 'Interest/interestcompany_create.html'
     pk_url_kwarg = 'company_id'
+    login_url = 'common-login'
     
     def get_success_url(self):
         return reverse('company-list')
 
 
+@login_required(login_url='common-login')
 def InterestCompanyAllDelete(request):
     object = InterestCompany.objects.filter(user=request.user)
     object.delete()
