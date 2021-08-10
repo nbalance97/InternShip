@@ -1,6 +1,10 @@
 from django.shortcuts import reverse, redirect
+from django.http import HttpResponseForbidden
+
 # Generic View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic.detail import SingleObjectMixin
+
 # Pagination
 from django.core.paginator import Paginator
 # Rest API
@@ -70,6 +74,11 @@ class InterestCompanyDeleteView(LoginRequiredMixin, DeleteView):
     context_object_name = 'company'
     login_url = 'common-login'
 
+    def post(self, request, *args, **kwargs):
+        if request.user != self.get_object().user: # User이 아니라면 Forbidden
+            return HttpResponseForbidden()
+        return super().post(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse('company-list')
 
@@ -80,7 +89,12 @@ class InterestCompanyUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'Interest/interestcompany_create.html'
     pk_url_kwarg = 'company_id'
     login_url = 'common-login'
-    
+
+    def post(self, request, *args, **kwargs):
+        if request.user != self.get_object().user: # User이 아니라면 Forbidden
+            return HttpResponseForbidden()
+        return super().post(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse('company-list')
 
