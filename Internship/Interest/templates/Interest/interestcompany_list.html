@@ -117,17 +117,15 @@
 
         let input_duration = undefined;
 
-        if (duration === '채용시' || duration === '상시') {
-            input_duration = '1900-01-01T00:00'
+        if ((duration === '채용시') || (duration === '상시')) {
+            input_duration = '1900-01-01T01:00'
         } else {
             let total = duration.slice(1, 6);
             let month = total.slice(0, 2);
             let day = total.slice(3, 5);
             let year = (new Date()).getFullYear();
             input_duration = year+"-"+month+"-"+day+"T00:00";
-            console.log(input_duration)
         }
-
 
         if (userId === 'None')
             return;
