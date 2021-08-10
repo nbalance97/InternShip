@@ -30,7 +30,11 @@
                       <div class="card-header" style="font-family:BMJUA;">{{object.company_name}}</div>
                       <div class="card-body">
                           <h4 class="card-title" style="font-family:BMJUA;">{{object.intern_title}}</h4>
-                          <p class="card-text" style="font-family:BMJUA;">{{object.duration}}</p>
+                          {% if object.duration.year != 1899  %}
+                          <p class="card-text" style="font-family:BMJUA;">{{object.duration | date:"Y년-m월-d일 마감"}}</p>
+                          {% else %}
+                          <p class="card-text" style="font-family:BMJUA;">상시 또는 채용시까지</p>
+                          {% endif %}
                           <a href="{% url 'company-delete' object.id %}" class="btn btn-info" style="font-family:BMJUA;">삭제하기</a>
                           <a href="{% url 'company-modify' object.id %}" class="btn btn-success" style="font-family:BMJUA;">변경하기</a>
                       </div>
@@ -50,8 +54,9 @@
                           <div class="card-body">
                               <input type="hidden" id="name{{forloop.counter0}}" name="{{object.company_name}}">
                               <input type="hidden" id="title{{forloop.counter0}}" name="{{object.title}}">
+                              <input type="hidden" id="duration{{forloop.counter0}}" name="{{object.duration}}">
                               <h4 class="card-title" style="font-family:BMJUA;">{{object.title}}</h4>
-                              <p class="card-text" style="font-family:BMJUA;">{{object.duration}}</p>
+                              <p class="card-text"  style="font-family:BMJUA;">{{object.duration}}</p>
                               <a class="btn btn-success" id="success" onclick="clickevent(this);" name="{{forloop.counter0}}">관심 기업 등록</a>
                           </div>
                         </div>
@@ -86,6 +91,7 @@
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
     const csrftoken = getCookie('csrftoken');
+
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -103,10 +109,25 @@
     }
 
     function clickevent(self) {
-        var idx = $(self).attr('name')
-        var name = $('#name'+idx).attr('name')
-        var title = $('#title'+idx).attr('name')
-        var userId = '{{ user.id }}';
+        let idx = $(self).attr('name')
+        let name = $('#name'+idx).attr('name')
+        let title = $('#title'+idx).attr('name')
+        let userId = '{{ user.id }}';
+        let duration = $('#duration'+idx).attr('name');
+
+        let input_duration = undefined;
+
+        if (duration === '채용시' || duration === '상시') {
+            input_duration = '1900-01-01T00:00'
+        } else {
+            let total = duration.slice(1, 6);
+            let month = total.slice(0, 2);
+            let day = total.slice(3, 5);
+            let year = (new Date()).getFullYear();
+            input_duration = year+"-"+month+"-"+day+"T00:00";
+            console.log(input_duration)
+        }
+
 
         if (userId === 'None')
             return;
@@ -118,7 +139,7 @@
                 "user" : userId,
                 "company_name" : name,
                 "intern_title" : title,
-                "duration" : "1900-01-01T12:00"
+                "duration" : input_duration,
             },
             dataType: "json",
             beforeSend: function(request) {
@@ -129,7 +150,6 @@
             },
             error: function(request, status, error) {
                 console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+error);
-
             }
         });
     }

@@ -75,7 +75,8 @@ class InterestCompanyDeleteView(LoginRequiredMixin, DeleteView):
     login_url = 'common-login'
 
     def post(self, request, *args, **kwargs):
-        if request.user != self.get_object().user: # User이 아니라면 Forbidden
+        # 유저가 아니라면 Forbidden
+        if request.user != self.get_object().user:
             return HttpResponseForbidden()
         return super().post(request, *args, **kwargs)
 
