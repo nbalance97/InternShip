@@ -46,7 +46,7 @@ class InterestCompanyListView(ListView):
         context = super(InterestCompanyListView, self).get_context_data(**kwargs)
         internship_info = get_internship_information()
         page = self.get_page_number()
-        total_page_list = Paginator(internship_info, 9)
+        total_page_list = Paginator(internship_info, 12)
         curr_page = total_page_list.get_page(page)
         context['internship_information'] = internship_info
         context['internship_obj'] = curr_page

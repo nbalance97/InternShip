@@ -1,87 +1,114 @@
 {% extends './base.html' %}
 {% load static %}
 {% block content %}
+    <link rel="stylesheet" href="{% static 'Interest/css/style.css' %}">
     <div class="container">
         <div class="row">
-            <div class="col-md-10">
-                <a href="{% url 'company-create' %}" class="btn btn-info" style="font-family:BMJUA; margin:10px;">추가</a>
-                <a href="{% url 'company-all-delete' %}" class="btn btn-warning" style="font-family:BMJUA;" margin:10px;">전체삭제</a>
+            <div class="col-md-9">
+                <a href="{% url 'company-create' %}" class="btn btn-primary font_margin" >추가</a>
+                <a href="{% url 'company-all-delete' %}" class="btn btn-primary font_margin">전체삭제</a>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
+                <div class="row">
+                    {% if user.is_authenticated %}
+                        <div class="col-md-4 ">
+                            <label style="font-family:BMJUA; padding:18px 11px; font-size:18px;">{{ user.username }} 님</label>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'common-logout' %}" class="btn btn-primary font_margin">로그아웃</a>
+                        </div>
+                    {% else %}
+                        <div class="col-md-5 offset-md-1">
+                            <a href="{% url 'common-login' %}" class="btn btn-primary font_margin" >로그인</a>
+                        </div>
+                        <div class="col-md-5 offset-md-1">
+                            <a href="{% url 'common-signup' %}" class="btn btn-primary font_margin offset-md-3">회원가입</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="row">
+            <div class="col-md-12" id="enrolled_data">
+                <h2 class="title" style="text-align:center; padding:10px">저장한 공고</h2>
                 {% if user.is_authenticated %}
-                    <label style="font-family:BMJUA;">{{ user.username }}님</label>
-                    <a href="{% url 'common-logout' %}" class="btn btn-success" style="font-family:BMJUA; margin:10px;">로그아웃</a>
+                    {% for object in objects %}
+                        <div class="col-md-12">
+                            <div class="card text-white bg-primary mb-3" style="max-width: 20rem; margin:10px;">
+                              <div class="card-header font">{{object.company_name}}</div>
+                              <div class="card-body">
+                                  <h4 class="card-title font">{{object.intern_title}}</h4>
+                                  {{ object.duration.year }}
+                                  {% if object.duration.year != 1900  %}
+                                      <p class="card-text font">{{object.duration | date:"Y년-m월-d일 마감"}}</p>
+                                  {% else %}
+                                      <p class="card-text font">상시 또는 채용시까지</p>
+                                  {% endif %}
+                                  <a href="{% url 'company-delete' object.id %}" class="btn btn-primary font">삭제하기</a>
+                                  <a href="{% url 'company-modify' object.id %}" class="btn btn-primary font">변경하기</a>
+                              </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="alert alert-dismissible alert-secondary">
+                          <strong>등록된 인턴 공고가 없어요.</strong>
+                        </div>
+                    {% endfor %}
                 {% else %}
-                    <a href="{% url 'common-login' %}" class="btn btn-success" style="font-family:BMJUA; margin:10px;">로그인</a>
-                    <a href="{% url 'common-signup' %}" class="btn btn-success" style="font-family:BMJUA; margin:10px;">회원가입</a>
+                <div class="alert alert-dismissible alert-secondary">
+                  <strong>로그인이 되어있지 않아요.</strong> <a href="{% url 'common-login' %}" class="alert-link">로그인 후에 이용해 주세요.</a>.
+                </div>
                 {% endif %}
             </div>
         </div>
 
-        <hr>
-        
-        <div class="row">
-            <div class="col-md-4" id="enrolled_data" style="border-right:1px solid black;">
-                <h2 style="font-family:BMJUA; text-align:center;">등록된 공고</h2>
-                <hr>
-            {% for object in objects %}
-                <div class="col-md-12">
-                    <div class="card text-white bg-primary mb-3" style="max-width: 20rem; margin:10px;">
-                      <div class="card-header" style="font-family:BMJUA;">{{object.company_name}}</div>
-                      <div class="card-body">
-                          <h4 class="card-title" style="font-family:BMJUA;">{{object.intern_title}}</h4>
-                          {% if object.duration.year != 1899  %}
-                          <p class="card-text" style="font-family:BMJUA;">{{object.duration | date:"Y년-m월-d일 마감"}}</p>
-                          {% else %}
-                          <p class="card-text" style="font-family:BMJUA;">상시 또는 채용시까지</p>
-                          {% endif %}
-                          <a href="{% url 'company-delete' object.id %}" class="btn btn-info" style="font-family:BMJUA;">삭제하기</a>
-                          <a href="{% url 'company-modify' object.id %}" class="btn btn-success" style="font-family:BMJUA;">변경하기</a>
-                      </div>
-                    </div>
-                </div>
-            {% endfor %}
-            </div>
 
-            <div class="col-md-8">
-                <h2 style="font-family:BMJUA; text-align:center;">현재 모집중인 공고</h2>
-                <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <h2 style="font-family:BMJUA; text-align:center; padding:10px">현재 모집중인 공고</h2>
                 <div class="row">
                 {% for object in internship_obj.object_list %}
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="card text-white bg-primary mb-3" style="max-width: 20rem; margin:10px;">
                           <div class="card-header" style="font-family:BMJUA;">{{object.company_name}}</div>
                           <div class="card-body">
                               <input type="hidden" id="name{{forloop.counter0}}" name="{{object.company_name}}">
                               <input type="hidden" id="title{{forloop.counter0}}" name="{{object.title}}">
                               <input type="hidden" id="duration{{forloop.counter0}}" name="{{object.duration}}">
-                              <h4 class="card-title" style="font-family:BMJUA;">{{object.title}}</h4>
-                              <p class="card-text"  style="font-family:BMJUA;">{{object.duration}}</p>
-                              <a class="btn btn-success" id="success" onclick="clickevent(this);" name="{{forloop.counter0}}">관심 기업 등록</a>
+                              <h4 class="card-title font">{{object.title}}</h4>
+                              <p class="card-text font">{{object.duration}}</p>
+                              <a class="btn btn-success font_margin" id="success" onclick="clickevent(this);" name="{{forloop.counter0}}">관심 기업 등록</a>
                           </div>
                         </div>
                     </div>
                 {% endfor %}
                 </div>
-                <div class="row justify-content-md-center" style="margin:auto">
-                    {% if internship_obj.has_previous %}
-                        <a href="?page=1" class="col-sm-1 btn btn-warning"><<</a>
-                        <a href="?page={{ internship_obj.previous_page_number }}" class="col-sm-1 btn btn-warning"><</a>
-                    {% else %}
-                        <a class="col-sm-1"></a>
-                        <a class="col-sm-1"></a>
-                    {% endif %}
-                        <div class="col-sm-3" style="margin: 10px 0px; text-align: center; font-family:BMJUA;">
-                            Page {{ internship_obj.number }} of {{ internship_obj.paginator.num_pages }}.
-                        </div>
-                    {% if internship_obj.has_next %}
-                        <a href="?page={{ internship_obj.next_page_number }}" class="col-sm-1 btn btn-warning">></a>
-                        <a href="?page={{ internship_obj.paginator.num_pages }}" class="col-sm-1 btn btn-warning">>></a>
-                    {% else %}
-                        <a class="col-sm-1"></a>
-                        <a class="col-sm-1"></a>
-                    {% endif %}
-
+                <div class="row justify-content-md-center">
+                    <div class="col-md-2">
+                      <ul class="pagination">
+                        <li class="page-item">
+                          <a class="page-link" href="?page=1">&laquo;</a>
+                        </li>
+                        <li class="page-item">
+                            {% if internship_obj.has_previous %}
+                                <a class="page-link" href="?page={{ internship_obj.previous_page_number }}">{{ internship_obj.previous_page_number }}</a>
+                            {% endif %}
+                        </li>
+                        <li class="page-item active">
+                          <a class="page-link" href="#">{{ internship_obj.number }}</a>
+                        </li>
+                        <li class="page-item">
+                            {% if internship_obj.has_next %}
+                                <a class="page-link" href="?page={{ internship_obj.next_page_number }}">{{ internship_obj.next_page_number }}</a>
+                            {% endif %}
+                        </li>
+                        <li class="page-item">
+                          <a class="page-link" href="?page={{ internship_obj.paginator.num_pages }}">&raquo;</a>
+                        </li>
+                      </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,7 +145,7 @@
         let input_duration = undefined;
 
         if ((duration === '채용시') || (duration === '상시')) {
-            input_duration = '1900-01-01T01:00'
+            input_duration = '1900-01-01T09:00' // duration 적용
         } else {
             let total = duration.slice(1, 6);
             let month = total.slice(0, 2);
