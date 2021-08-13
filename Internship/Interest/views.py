@@ -2,15 +2,15 @@ from django.shortcuts import reverse, redirect
 from django.http import HttpResponseForbidden
 
 # Generic View
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.views.generic.detail import SingleObjectMixin
+from django.views.generic import (
+    ListView, CreateView, UpdateView, DeleteView
+)
 
 # Pagination
 from django.core.paginator import Paginator
 # Rest API
 from .serializer import InterestCompanySerializer
 from rest_framework import viewsets
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 
