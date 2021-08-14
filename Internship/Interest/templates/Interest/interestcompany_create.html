@@ -1,27 +1,29 @@
 {% extends './base.html' %}
+{% load static %}
 {% block content %}
-    <div class="row" style="margin: auto;">
-        <div class="col-sm-4" style="align: center">
-            <form action='' method="post"> {% csrf_token %}
+    <div class="row" style="height: 100%; align: middle">
+        <div class="col-sm-4 offset-sm-4" style="margin-top: auto; margin-bottom: auto;">
+            <h2 class='font_margin' style="text-align: center;">정보 변경</h2>
+            <form class="alert alert-dismissible alert-light" action='' method="post"> {% csrf_token %}
                 <div class="form-group" style="margin:0px 10px;">
-                    <label class="form-label mt-4">회사명</label>
+                    <label class="form-label mt-4 font">회사명</label>
                     {{ form.company_name }}
                 </div>
 
                 <div class="form-group" style="margin:0px 10px;">
-                    <label class="form-label mt-4">인턴 제목</label>
+                    <label class="form-label mt-4 font">인턴 제목</label>
                     {{ form.intern_title }}
                 </div>
 
                 <div class="form-group" style="margin:0px 10px;">
-                    <label class="form-label mt-4">만기일</label>
+                    <label class="form-label mt-4 font">만기일</label>
                     {{ form.duration }}
                 </div>
 
                 <div class="form-group" style="margin:10px 10px;">
                     <div class="row">
-                        <input type="submit" class="btn btn-primary col-sm-2" style="margin: auto; display:block;" value="확인"/>
-                        <input type="button" class="btn btn-primary col-sm-2" style="margin: auto; display:block;" value="취소"/>
+                        <input type="submit" class="btn btn-primary col-sm-2 font" style="margin: auto; display:block;" value="확인"/>
+                        <input type="button" class="btn btn-primary col-sm-2 font" style="margin: auto; display:block;" value="취소"/>
                     </div>
                 </div>
             </form>

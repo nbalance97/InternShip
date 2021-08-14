@@ -1,9 +1,12 @@
 {% extends './base.html' %}
+{% load static %}
 {% block content %}
-    <form action="{% url 'company-delete' company.id %}" method="post" > {% csrf_token %}
-        <div class="row" style="text-align: center; margin: 10px;">
-            <p> 정말로 삭제하시겠습니까 ? </p>
-            <input type="submit" class="btn btn-info col-sm-2" style="margin: auto;" value="삭제하기">
-        </div>
-    </form>
+<div class="row" style="height: 100%; align: middle;">
+    <div class="alert alert-dismissible alert-danger col-sm-4 offset-sm-4" style="margin-top: auto; margin-bottom: auto; text-align:center;">
+        <form method="post"> {% csrf_token %}
+            <p class="font" style="font-size:30px;"> 정말로 삭제하시겠습니까 ? </p>
+            <input type="submit" class="btn btn-danger col-sm-2 font" style="margin: auto;" value="삭제하기">
+        </form>
+    </div>
+</div>
 {% endblock content %}

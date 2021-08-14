@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'Interest',
     'django_seed',
-    'common'
+    'common',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
