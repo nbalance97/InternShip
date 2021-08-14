@@ -45,3 +45,22 @@ Internship Project
 1. Bootstrap Template 사용
     - https://bootswatch.com/journal/
 2. widget_tweaks 사용하여 Form 클래스 변경
+
+# 화면
+
+## 메인 화면
+
+![image](https://user-images.githubusercontent.com/76891875/129441862-803fa4c4-429d-4d81-ae38-208b4a5d2995.png)
+
+![image](https://user-images.githubusercontent.com/76891875/129441875-c6aa3d7e-e7e8-4054-9697-87bb7f09914e.png)
+
+
+
+## 로그인
+
+![image](https://user-images.githubusercontent.com/76891875/129441893-286c9063-f250-4f93-a7ad-4918d17ea9e8.png)
+
+## 회원가입
+
+![image](https://user-images.githubusercontent.com/76891875/129441901-2ada13a7-6c41-420c-957b-b6debe1dae75.png)
+
