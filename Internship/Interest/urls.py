@@ -3,7 +3,7 @@ from . import views
 from .views import InterestCompanyViewSet
 
 IC_list = InterestCompanyViewSet.as_view({
-    'post': 'create',
+    'post': 'create_interestcompany',
     'get': 'list'
 })
 

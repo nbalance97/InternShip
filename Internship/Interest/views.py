@@ -10,7 +10,11 @@ from django.views.generic import (
 from django.core.paginator import Paginator
 # Rest API
 from .serializer import InterestCompanySerializer
-from rest_framework import viewsets
+
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 
@@ -23,6 +27,21 @@ from .process import get_internship_information
 class InterestCompanyViewSet(viewsets.ModelViewSet):
     queryset = InterestCompany.objects.all()
     serializer_class = InterestCompanySerializer
+
+    @action(detail=False, methods=['post'])
+    def create_interestcompany(self, request):
+        serializer = InterestCompanySerializer(data=request.data)
+        if serializer.is_valid():
+            InterestCompany.objects.create(
+                user=serializer.validated_data['user'],
+                company_name=serializer.validated_data['company_name'],
+                intern_title=serializer.validated_data['intern_title'],
+                duration=serializer.validated_data['duration']
+            )
+            return Response({'status': 'create interestcompany'})
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class InterestCompanyListView(ListView):
